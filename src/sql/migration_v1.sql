@@ -39,7 +39,7 @@ CREATE TABLE Category (
 
 CREATE TABLE Product (
     id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(30) NOT NULL,
+    name VARCHAR(500) NOT NULL,
     img_url TEXT NOT NULL,
     description TEXT NOT NULL,
     price FLOAT(8) NOT NULL,

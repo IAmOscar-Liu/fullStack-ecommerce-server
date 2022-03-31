@@ -31,7 +31,7 @@ import { firebaseUpload } from "../utils/firebaseUpload";
 import {
   numOfpopularProduct,
   numOfTopRatedProduct,
-} from "../utils/NumOfpopularAndTopRated";
+} from "../utils/numOfpopularAndTopRated";
 import { GraphQLUpload } from "graphql-upload";
 
 @ObjectType()
