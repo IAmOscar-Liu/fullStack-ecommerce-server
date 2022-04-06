@@ -107,7 +107,7 @@ export class PostResolver {
         FROM Post
         WHERE product_id = ?
       `,
-      [product_id]
+      [product_id + ""]
     );
 
     return (rows as { num_of_posts: number }[])[0].num_of_posts;
@@ -134,13 +134,13 @@ export class PostResolver {
           RIGHT JOIN (
         
             SELECT
-              Post.*,
-              COUNT(Comment.post_id) AS commentCount
+              p.*,
+              COUNT(c.post_id) AS commentCount
             FROM
-              Comment 
-              RIGHT JOIN Post ON Post.id = Comment.post_id
+              Comment c
+              RIGHT JOIN Post p ON p.id = c.post_id
             GROUP BY
-              Post.id
+              p.id
               
           ) AS p ON p.id = pl.post_id
           INNER JOIN Account AS a ON p.account_id = a.id
@@ -152,7 +152,7 @@ export class PostResolver {
           p.id DESC 
         LIMIT ?, ?     
       `,
-      [product_id, offset, limit + 1]
+      [product_id + "", offset + "", limit + 1 + ""]
     );
 
     if (
@@ -191,13 +191,13 @@ export class PostResolver {
           RIGHT JOIN (
         
             SELECT
-              Post.*,
-              COUNT(Comment.post_id) AS commentCount
+              p.*,
+              COUNT(c.post_id) AS commentCount
             FROM
-              Comment 
-              RIGHT JOIN Post ON Post.id = Comment.post_id
+              Comment c
+              RIGHT JOIN Post p ON Post.id = c.post_id
             GROUP BY
-              Post.id
+              p.id
               
           ) AS p ON p.id = pl.post_id
           INNER JOIN Account AS a ON p.account_id = a.id
@@ -210,7 +210,7 @@ export class PostResolver {
           p.id DESC  
         LIMIT ?, ?    
       `,
-      [product_id, offset, limit + 1]
+      [product_id + "", offset + "", limit + 1 + ""]
     );
 
     if (
@@ -249,13 +249,13 @@ export class PostResolver {
           RIGHT JOIN (
         
             SELECT
-              Post.*,
-              COUNT(Comment.post_id) AS commentCount
+              p.*,
+              COUNT(c.post_id) AS commentCount
             FROM
-              Comment 
-              RIGHT JOIN Post ON Post.id = Comment.post_id
+              Comment c
+              RIGHT JOIN Post p ON p.id = c.post_id
             GROUP BY
-              Post.id
+              p.id
               
           ) AS p ON p.id = pl.post_id
           INNER JOIN Account AS a ON p.account_id = a.id
@@ -268,7 +268,7 @@ export class PostResolver {
           p.id DESC 
         LIMIT ?, ?     
       `,
-      [product_id, offset, limit + 1]
+      [product_id + "", offset + "", limit + 1 + ""]
     );
 
     if (
@@ -302,7 +302,7 @@ export class PostResolver {
         VALUES
           (?, ?, ?)
       `,
-      [content, product_id, account_id]
+      [content, product_id + "", account_id + ""]
     );
 
     const postID = (rows as ResultSetHeader).insertId;
@@ -318,7 +318,7 @@ export class PostResolver {
           INNER JOIN Account AS a ON p.account_id = a.id
         WHERE p.id = ?         
       `,
-      [postID]
+      [postID + ""]
     );
 
     return {
@@ -347,7 +347,7 @@ export class PostResolver {
         VALUES
           (?, ?, ?)
       `,
-      [content, post_id, account_id]
+      [content, post_id + "", account_id + ""]
     );
 
     const commentID = (rows as ResultSetHeader).insertId;
@@ -363,7 +363,7 @@ export class PostResolver {
           INNER JOIN Account AS a ON c.account_id = a.id
         WHERE c.id = ?         
       `,
-      [commentID]
+      [commentID + ""]
     );
 
     return {
@@ -390,14 +390,14 @@ export class PostResolver {
         VALUES
           (?, ?)
       `,
-      [post_id, account_id]
+      [post_id + "", account_id + ""]
     );
 
     const [likeRow] = await pool.execute(
       `
         SELECT COUNT(*) AS count FROM PostLike WHERE post_id = ?
       `,
-      [post_id]
+      [post_id + ""]
     );
 
     return {
@@ -421,14 +421,14 @@ export class PostResolver {
         VALUES
           (?, ?)
       `,
-      [comment_id, account_id]
+      [comment_id + "", account_id + ""]
     );
 
     const [likeRow] = await pool.execute(
       `
         SELECT COUNT(*) AS count FROM CommentLike WHERE comment_id = ?
       `,
-      [comment_id]
+      [comment_id + ""]
     );
 
     return {

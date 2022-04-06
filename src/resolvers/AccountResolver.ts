@@ -222,7 +222,7 @@ export class AccountResolver {
 
       const [rows] = await pool.execute(
         "SELECT * FROM `Account` WHERE `id` = ?",
-        [account_id]
+        [account_id + ""]
       );
 
       // console.log(rows);
@@ -244,13 +244,11 @@ export class AccountResolver {
     @Arg("account_id", () => ID) account_id: number
   ): Promise<AccountDetail> {
     try {
-      getAccessTokenFromAuth(
-        req.headers["authorization"]
-      );
+      getAccessTokenFromAuth(req.headers["authorization"]);
 
       const [rows] = await pool.execute(
         "SELECT * FROM `Account` WHERE `id` = ?",
-        [account_id]
+        [account_id + ""]
       );
 
       if ((rows as AccountWithPassword[]).length === 0) return {};
@@ -270,12 +268,12 @@ export class AccountResolver {
   ): Promise<NumOfPostAndBlog> {
     const [postTotalRows] = await pool.execute(
       `SELECT COUNT(id) AS total_post FROM Post WHERE account_id = ?`,
-      [account_id]
+      [account_id + ""]
     );
 
     const [blogTotalRows] = await pool.execute(
       `SELECT COUNT(id) AS total_blog FROM Blog WHERE account_id = ?`,
-      [account_id]
+      [account_id + ""]
     );
 
     return {
@@ -287,7 +285,8 @@ export class AccountResolver {
   @Query(() => AccountData)
   async getRecentAccount(
     @Ctx() { pool }: MyContext,
-    @Arg("limit", { defaultValue: process.env.RECENT_ACCOUNT_LIMIT }) _limit: number,
+    @Arg("limit", { defaultValue: process.env.RECENT_ACCOUNT_LIMIT })
+    _limit: number,
     @Arg("offset", { defaultValue: 0 }) offset: number
   ): Promise<AccountData> {
     const limit = parseInt(_limit as unknown as string);
@@ -298,8 +297,9 @@ export class AccountResolver {
         FROM Account
         ORDER BY id DESC
         LIMIT ?, ?
-      `,  [offset, limit + 1]
-    )
+      `,
+      [offset + "", limit + 1 + ""]
+    );
 
     if ((rows as AccountBrief[]).length === limit + 1) {
       return {
@@ -357,12 +357,12 @@ export class AccountResolver {
             ${updateStrings.join(", ")}
           WHERE id = ?
         `,
-        [account_id]
+        [account_id + ""]
       );
 
       const [userRows] = await poolTransaction.execute(
         `SELECT * FROM Account WHERE id = ?`,
-        [account_id]
+        [account_id + ""]
       );
 
       await poolTransaction.commit();

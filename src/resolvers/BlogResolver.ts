@@ -104,16 +104,14 @@ export class BlogResolver {
   }
 
   @Query(() => Int)
-  async getNumOfBlogs(
-    @Ctx() {pool}: MyContext
-  ): Promise<number> {
+  async getNumOfBlogs(@Ctx() { pool }: MyContext): Promise<number> {
     const [rows] = await pool.query(
       `
         SELECT COUNT(*) AS num_of_blog FROM Blog
       `
     );
 
-    return (rows as {num_of_blog: number}[])[0].num_of_blog;
+    return (rows as { num_of_blog: number }[])[0].num_of_blog;
   }
 
   @Query(() => BlogData)
@@ -136,13 +134,13 @@ export class BlogResolver {
             RIGHT JOIN (
             
                 SELECT
-                    Blog.*,
-                    COUNT(BlogLike.blog_id) AS blogLikeCount
+                    b.*,
+                    COUNT(bl.blog_id) blogLikeCount
                 FROM
-                    BlogLike 
-                    RIGHT JOIN Blog ON Blog.id = blogLike.blog_id
+                    BlogLike bl 
+                    RIGHT JOIN Blog b ON b.id = bl.blog_id
                 GROUP BY
-                    Blog.id
+                    b.id
             
             ) AS b ON b.id = bc.blog_id
             INNER JOIN Account AS a ON b.account_id = a.id
@@ -152,7 +150,7 @@ export class BlogResolver {
             b.id DESC
         LIMIT ?, ?    
         `,
-      [offset, limit + 1]
+      [offset + "", limit + 1 + ""]
     );
 
     if ((rows as BlogDetail[]).length === limit + 1) {
@@ -187,14 +185,14 @@ export class BlogResolver {
             BlogComment AS bc
             RIGHT JOIN (
             
-                SELECT
-                    Blog.*,
-                    COUNT(BlogLike.blog_id) AS blogLikeCount
-                FROM
-                    BlogLike 
-                    RIGHT JOIN Blog ON Blog.id = blogLike.blog_id
-                GROUP BY
-                    Blog.id
+              SELECT
+                  b.*,
+                  COUNT(bl.blog_id) blogLikeCount
+              FROM
+                  BlogLike bl 
+                  RIGHT JOIN Blog b ON b.id = bl.blog_id
+              GROUP BY
+                  b.id
             
             ) AS b ON b.id = bc.blog_id
             INNER JOIN Account AS a ON b.account_id = a.id
@@ -205,7 +203,7 @@ export class BlogResolver {
             b.id DESC
         LIMIT ?, ?    
       `,
-      [offset, limit + 1]
+      [offset + "", limit + 1 + ""]
     );
 
     if (
@@ -243,14 +241,14 @@ export class BlogResolver {
             BlogComment AS bc
             RIGHT JOIN (
       
-                SELECT
-                    Blog.*,
-                    COUNT(BlogLike.blog_id) AS blogLikeCount
-                FROM
-                    BlogLike 
-                    RIGHT JOIN Blog ON Blog.id = blogLike.blog_id
-                GROUP BY
-                    Blog.id
+              SELECT
+                  b.*,
+                  COUNT(bl.blog_id) blogLikeCount
+              FROM
+                  BlogLike bl 
+                  RIGHT JOIN Blog b ON b.id = bl.blog_id
+              GROUP BY
+                  b.id
             
             ) AS b ON b.id = bc.blog_id
             INNER JOIN Account AS a ON b.account_id = a.id
@@ -261,7 +259,7 @@ export class BlogResolver {
             b.id DESC
         LIMIT ?, ?       
       `,
-      [offset, limit + 1]
+      [offset + "", limit + 1 + ""]
     );
 
     if ((rows as BlogDetail[]).length === limit + 1) {
@@ -289,7 +287,7 @@ export class BlogResolver {
 
     const poolTransaction = await pool.getConnection();
     await poolTransaction.beginTransaction();
-    
+
     try {
       const [rows] = await poolTransaction.execute(
         `
@@ -324,7 +322,7 @@ export class BlogResolver {
           SET img_url = ?
           WHERE id = ?
         `,
-          [img_url, blogID]
+          [img_url, blogID + ""]
         );
 
       await poolTransaction.commit();
@@ -340,7 +338,7 @@ export class BlogResolver {
           INNER JOIN Account AS a ON b.account_id = a.id
         WHERE b.id = ?         
       `,
-        [blogID]
+        [blogID + ""]
       );
 
       return {
@@ -374,7 +372,7 @@ export class BlogResolver {
         VALUES
           (?, ?, ?)
       `,
-      [content, blog_id, account_id]
+      [content, blog_id + "", account_id + ""]
     );
 
     const blogCommentID = (rows as ResultSetHeader).insertId;
@@ -390,7 +388,7 @@ export class BlogResolver {
           INNER JOIN Account AS a ON bc.account_id = a.id
         WHERE bc.id = ?         
       `,
-      [blogCommentID]
+      [blogCommentID + ""]
     );
 
     return {
@@ -417,14 +415,14 @@ export class BlogResolver {
         VALUES
           (?, ?)
       `,
-      [blog_id, account_id]
+      [blog_id + "", account_id + ""]
     );
 
     const [blogLikeRow] = await pool.execute(
       `
         SELECT COUNT(*) AS count FROM BlogLike WHERE blog_id = ?
       `,
-      [blog_id]
+      [blog_id + ""]
     );
 
     return {
@@ -449,14 +447,14 @@ export class BlogResolver {
         VALUES
           (?, ?)
       `,
-      [blog_comment_id, account_id]
+      [blog_comment_id + "", account_id + ""]
     );
 
     const [blogCommentlikeRow] = await pool.execute(
       `
         SELECT COUNT(*) AS count FROM BlogCommentLike WHERE blog_comment_id = ?
       `,
-      [blog_comment_id]
+      [blog_comment_id + ""]
     );
 
     return {

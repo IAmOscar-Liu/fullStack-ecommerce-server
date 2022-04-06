@@ -56,13 +56,13 @@ export class FavoriteResolver {
                 INNER JOIN (
 
                     SELECT
-                        Product.*,
-                        AVG(Rate.score) AS avg_rating
+                        p.*,
+                        AVG(r.score) AS avg_rating
                     FROM
-                        Product
-                        LEFT JOIN Rate ON Rate.product_id = Product.id
+                        Product p
+                        LEFT JOIN Rate r ON r.product_id = p.id
                     GROUP BY
-                        Product.id
+                        p.id
 
                 ) AS p ON f.product_id = p.id
             WHERE
@@ -70,7 +70,7 @@ export class FavoriteResolver {
             ORDER BY
                f.id DESC          
         `,
-        [account_id]
+        [account_id + ""]
       );
 
       // console.log(rows);
@@ -103,7 +103,7 @@ export class FavoriteResolver {
         `
         SELECT COUNT(*) AS num_of_fav FROM Favorite WHERE account_id = ?
       `,
-        [account_id]
+        [account_id + ""]
       );
 
       const numberOfFav = (favRows as { num_of_fav: number }[])[0];
@@ -133,7 +133,7 @@ export class FavoriteResolver {
           VALUES
             (?, ?)
         `,
-        [product_id, account_id]
+        [product_id + "", account_id + ""]
       );
 
       return true;
@@ -158,7 +158,7 @@ export class FavoriteResolver {
         DELETE FROM Favorite
         WHERE product_id = ? AND account_id = ?
         `,
-        [product_id, account_id]
+        [product_id + "", account_id + ""]
       );
 
       // console.log('delete account_id: ', account_id, ", product_id: ", product_id);

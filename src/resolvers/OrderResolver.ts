@@ -108,7 +108,7 @@ export class OrderResolver {
 
     const [totalRows] = await pool.execute(
       `SELECT COUNT(id) AS total_order FROM MyOrder WHERE account_id = ?`,
-      [account_id]
+      [account_id + ""]
     );
 
     const total = (totalRows as { total_order: number }[])[0].total_order;
@@ -127,7 +127,7 @@ export class OrderResolver {
         ORDER BY id DESC
         LIMIT ?, ? 
       `,
-      [account_id, offset, limit + 1]
+      [account_id + "", offset + "", limit + 1 + ""]
     );
 
     if ((rows as OrderDetail[]).length === limit + 1) {
@@ -156,13 +156,20 @@ export class OrderResolver {
 
     const [rows] = await pool.execute(
       `
-          SELECT op.id AS id, p.id AS product_id, p.name AS product_name, p.price AS product_price, p.img_url AS product_img_url, op.payment, op.status FROM OrderProduct AS op
+          SELECT 
+            op.id AS id, 
+            p.id AS product_id, 
+            p.name AS product_name, 
+            p.price AS product_price, 
+            p.img_url AS product_img_url, 
+            op.payment, op.status 
+          FROM OrderProduct AS op
           JOIN Product AS p
           WHERE op.product_id = p.id
           ORDER BY id DESC
           LIMIT ?, ?
         `,
-      [offset, limit + 1]
+      [offset + "", limit + 1 + ""]
     );
 
     if ((rows as RecentOrder[]).length === limit + 1) {
@@ -274,7 +281,7 @@ export class OrderResolver {
           VALUES 
             (?, ?)
         `,
-        [account_id, session.id]
+        [account_id + "", session.id]
       );
 
       const orderID = (rows as ResultSetHeader).insertId;
@@ -297,7 +304,7 @@ export class OrderResolver {
               )
               .join(", ")}
         `,
-        [orderID]
+        [orderID + ""]
       );
 
       await poolTransaction.commit();
@@ -342,10 +349,10 @@ export class OrderResolver {
       await pool.execute(
         `
            UPDATE OrderProduct
-           SET payment = "Succeeded", status = "In Progress"
+           SET payment = 'Succeeded', status = 'In Progress'
            WHERE order_id = ?
          `,
-        [orderRowsResult[0].id]
+        [orderRowsResult[0].id + ""]
       );
 
       return {
@@ -384,12 +391,12 @@ export class OrderResolver {
     await pool.execute(
       `
           UPDATE OrderProduct
-          SET status = "Cancel" ${
-            payment === "Failed" ? `, payment = "Failed"` : ""
+          SET status = 'Cancel' ${
+            payment === "Failed" ? `, payment = 'Failed'` : ""
           }
           WHERE order_id = ?
         `,
-      [orderRowsResult[0].id]
+      [orderRowsResult[0].id + ""]
     );
 
     return true;

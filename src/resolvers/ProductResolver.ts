@@ -147,18 +147,18 @@ export class ProductResolver {
           p.isAvailable,
           SUM(op.quantity) AS total_order_count
         FROM
-          (SELECT * FROM OrderProduct WHERE payment = "Succeeded") AS op
+          (SELECT * FROM OrderProduct WHERE payment = 'Succeeded') AS op
           RIGHT JOIN (
             
             SELECT
-              Product.*,
-              COUNT(Rate.id) AS rating_times,
-              AVG(Rate.score) AS avg_rating
+              p.*,
+              COUNT(r.id) AS rating_times,
+              AVG(r.score) AS avg_rating
             FROM
-              Product 
-              LEFT JOIN Rate ON Rate.product_id = Product.id
+              Product p
+              LEFT JOIN Rate r ON r.product_id = p.id
             GROUP BY
-              Product.id
+              p.id
             
             ) AS p ON op.product_id = p.id
         WHERE 
@@ -171,7 +171,7 @@ export class ProductResolver {
           p.id DESC
         LIMIT ?, ?  
       `,
-      [offset, limit]
+      [offset + "", limit + ""]
     );
 
     // console.log(rows);
@@ -210,18 +210,18 @@ export class ProductResolver {
           p.isAvailable,
           SUM(op.quantity) AS total_order_count
         FROM
-          (SELECT * FROM OrderProduct WHERE payment = "Succeeded") AS op
+          (SELECT * FROM OrderProduct WHERE payment = 'Succeeded') AS op
           RIGHT JOIN (
             
             SELECT
-              Product.*,
-              COUNT(Rate.id) AS rating_times,
-              AVG(Rate.score) AS avg_rating
+              p.*,
+              COUNT(r.id) AS rating_times,
+              AVG(r.score) AS avg_rating
             FROM
-              Product 
-              LEFT JOIN Rate ON Rate.product_id = Product.id
+              Product p
+              LEFT JOIN Rate r ON r.product_id = p.id
             GROUP BY
-              Product.id
+              p.id
             
             ) AS p ON op.product_id = p.id
         WHERE p.isAvailable = TRUE       
@@ -234,7 +234,7 @@ export class ProductResolver {
           p.id DESC
         LIMIT ?, ?   
       `,
-      [offset, limit]
+      [offset + "", limit + ""]
     );
 
     return { products: rows as ProductBrief[] };
@@ -269,18 +269,18 @@ export class ProductResolver {
           p.isAvailable,
           SUM(op.quantity) AS total_order_count
         FROM
-          (SELECT * FROM OrderProduct WHERE payment = "Succeeded") AS op
+          (SELECT * FROM OrderProduct WHERE payment = 'Succeeded') AS op
           RIGHT JOIN (
             
             SELECT
-              Product.*,
-              COUNT(Rate.id) AS rating_times,
-              AVG(Rate.score) AS avg_rating
+              p.*,
+              COUNT(r.id) AS rating_times,
+              AVG(r.score) AS avg_rating
             FROM
-              Product 
-              LEFT JOIN Rate ON Rate.product_id = Product.id
+              Product p
+              LEFT JOIN Rate r ON r.product_id = p.id
             GROUP BY
-              Product.id
+              p.id
             
             ) AS p ON op.product_id = p.id
         WHERE p.isAvailable = TRUE       
@@ -292,7 +292,7 @@ export class ProductResolver {
           p.id DESC
         LIMIT ?, ?  
       `,
-      [offset, limit]
+      [offset + "", limit + ""]
     );
 
     return { products: rows as ProductBrief[] };
@@ -320,18 +320,18 @@ export class ProductResolver {
           p.isAvailable,
           SUM(op.quantity) AS total_order_count
         FROM
-          (SELECT * FROM OrderProduct WHERE payment = "Succeeded") AS op
+          (SELECT * FROM OrderProduct WHERE payment = 'Succeeded') AS op
           RIGHT JOIN (
             
             SELECT
-              Product.*,
-              COUNT(Rate.id) AS rating_times,
-              AVG(Rate.score) AS avg_rating
+              p.*,
+              COUNT(r.id) AS rating_times,
+              AVG(r.score) AS avg_rating
             FROM
-              Product 
-              LEFT JOIN Rate ON Rate.product_id = Product.id
+              Product p
+              LEFT JOIN Rate r ON r.product_id = p.id
             GROUP BY
-              Product.id
+              p.id
             
             ) AS p ON op.product_id = p.id
         WHERE p.isAvailable = TRUE       
@@ -341,7 +341,7 @@ export class ProductResolver {
           p.id
         LIMIT ?, ?  
       `,
-      [offset, limit]
+      [offset + "", limit + ""]
     );
 
     // console.log(rows);
@@ -371,18 +371,18 @@ export class ProductResolver {
           p.isAvailable,
           SUM(op.quantity) AS total_order_count
         FROM
-          (SELECT * FROM OrderProduct WHERE payment = "Succeeded") AS op
+          (SELECT * FROM OrderProduct WHERE payment = 'Succeeded') AS op
           RIGHT JOIN (
             
             SELECT
-              Product.*,
-              COUNT(Rate.id) AS rating_times,
-              AVG(Rate.score) AS avg_rating
+              p.*,
+              COUNT(r.id) AS rating_times,
+              AVG(r.score) AS avg_rating
             FROM
-              Product 
-              LEFT JOIN Rate ON Rate.product_id = Product.id
+              Product p
+              LEFT JOIN Rate r ON r.product_id = p.id
             GROUP BY
-              Product.id
+              p.id
             
             ) AS p ON op.product_id = p.id
         WHERE p.id IN (${product_ids.join(", ")})       
@@ -424,17 +424,19 @@ export class ProductResolver {
             allProduct.*,
             SUM(op.quantity) AS total_order_count
           FROM
-            (SELECT * FROM OrderProduct WHERE payment = "Succeeded") AS op
+            (SELECT * FROM OrderProduct WHERE payment = 'Succeeded') AS op
             RIGHT JOIN (
+
               SELECT
-                Product.*,
-                COUNT(Rate.id) AS rating_times,
-                AVG(Rate.score) AS avg_rating
+                p.*,
+                COUNT(r.id) AS rating_times,
+                AVG(r.score) AS avg_rating
               FROM
-                Product 
-                LEFT JOIN Rate ON Rate.product_id = Product.id
+                Product p
+                LEFT JOIN Rate r ON r.product_id = p.id
               GROUP BY
-                Product.id
+                p.id
+
             ) AS allProduct ON op.product_id = allProduct.id
           GROUP BY
             allProduct.id
@@ -450,7 +452,7 @@ export class ProductResolver {
           p.id DESC 
         LIMIT ?, ?         
        `,
-      [category_id, offset, limit]
+      [category_id + "", offset + "", limit + ""]
     );
 
     return { products: rows as ProductBrief[] };
@@ -468,7 +470,7 @@ export class ProductResolver {
 
     const [totalRows] = await pool.execute(
       `SELECT COUNT(id) AS total_product FROM Product WHERE createdBy = ?`,
-      [createdBy]
+      [createdBy + ""]
     );
 
     const total = (totalRows as { total_product: number }[])[0].total_product;
@@ -493,18 +495,18 @@ export class ProductResolver {
           p.isAvailable,
           SUM(op.quantity) AS total_order_count
         FROM
-          (SELECT * FROM OrderProduct WHERE payment = "Succeeded") AS op
+          (SELECT * FROM OrderProduct WHERE payment = 'Succeeded') AS op
         RIGHT JOIN (
         
           SELECT
-            Product.*,
-            COUNT(Rate.id) AS rating_times,
-            AVG(Rate.score) AS avg_rating
+            p.*,
+            COUNT(r.id) AS rating_times,
+            AVG(r.score) AS avg_rating
           FROM
-            Product 
-            LEFT JOIN Rate ON Rate.product_id = Product.id
+            Product p
+            LEFT JOIN Rate r ON r.product_id = p.id
           GROUP BY
-            Product.id
+            p.id
         
         ) AS p ON op.product_id = p.id
         WHERE 
@@ -515,7 +517,7 @@ export class ProductResolver {
           total_order_count DESC 
         LIMIT ?, ?                
       `,
-      [createdBy, offset, limit + 1]
+      [createdBy + "", offset + "", limit + 1 + ""]
     );
 
     if ((rows as ProductBrief[]).length === limit + 1) {
@@ -549,18 +551,18 @@ export class ProductResolver {
           a.name AS account_name,
           a.img_url AS account_img_url
         FROM
-          (SELECT * FROM OrderProduct WHERE payment = "Succeeded") AS op
+          (SELECT * FROM OrderProduct WHERE payment = 'Succeeded') AS op
           RIGHT JOIN (
             
             SELECT
-              Product.*,
-              COUNT(Rate.id) AS rating_times,
-              AVG(Rate.score) AS avg_rating
+              p.*,
+              COUNT(r.id) AS rating_times,
+              AVG(r.score) AS avg_rating
             FROM
-              Product 
-              LEFT JOIN Rate ON Rate.product_id = Product.id
+              Product p
+              LEFT JOIN Rate r ON r.product_id = p.id
             GROUP BY
-              Product.id
+              p.id
             
             ) AS p ON op.product_id = p.id
             INNER JOIN Account AS a ON p.createdBy = a.id
@@ -571,7 +573,7 @@ export class ProductResolver {
         ORDER BY
           p.id DESC
       `,
-      [product_id]
+      [product_id + ""]
     );
 
     if ((productRows as ProductWithAccount[]).length === 0) return null;
@@ -593,7 +595,7 @@ export class ProductResolver {
               product_id = ?
           )
       `,
-      [product_id]
+      [product_id + ""]
     );
 
     const categories = categoryRows as Category[];
@@ -619,15 +621,17 @@ export class ProductResolver {
           FROM
             OrderProduct AS op
             RIGHT JOIN (
+
               SELECT
-                Product.*,
-                COUNT(Rate.id) AS rating_times,
-                AVG(Rate.score) AS avg_rating
+                p.*,
+                COUNT(r.id) AS rating_times,
+                AVG(r.score) AS avg_rating
               FROM
-                Product 
-                LEFT JOIN Rate ON Rate.product_id = Product.id
+                Product p
+                LEFT JOIN Rate r ON r.product_id = p.id
               GROUP BY
-                Product.id
+                p.id
+
             ) AS allProduct ON op.product_id = allProduct.id
           GROUP BY
             allProduct.id
@@ -650,7 +654,7 @@ export class ProductResolver {
           p.id DESC 
         LIMIT ?       
        `,
-      [limit + 1]
+      [limit + 1 + ""]
     );
 
     const simularProducts = (similarProductRows as ProductBrief[])
@@ -770,7 +774,7 @@ export class ProductResolver {
 
       const [productRows] = await pool.execute(
         `SELECT * FROM Product WHERE id = ?`,
-        [productID]
+        [productID + ""]
       );
 
       return (productRows as Product[])[0];
@@ -799,7 +803,7 @@ export class ProductResolver {
 
     const [productCreatedByRows] = await pool.execute(
       `SELECT createdBy FROM Product WHERE id = ?`,
-      [product_id]
+      [product_id + ""]
     );
     const createdBy = (productCreatedByRows as { createdBy: any }[])[0]
       .createdBy;
@@ -887,7 +891,7 @@ export class ProductResolver {
 
       const [productRows] = await pool.execute(
         `SELECT * FROM Product WHERE id = ?`,
-        [product_id]
+        [product_id + ""]
       );
 
       return (productRows as Product[])[0];
@@ -910,7 +914,7 @@ export class ProductResolver {
 
     const [productCreatedByRows] = await pool.execute(
       `SELECT createdBy FROM Product WHERE id = ?`,
-      [product_id]
+      [product_id + ""]
     );
     const createdBy = (productCreatedByRows as { createdBy: any }[])[0]
       .createdBy;
@@ -924,12 +928,12 @@ export class ProductResolver {
           isAvailable = ?
         WHERE id = ?
       `,
-      [isAvailable, product_id]
+      [isAvailable + "", product_id + ""]
     );
 
     const [productRows] = await pool.execute(
       `SELECT * FROM Product WHERE id = ?`,
-      [product_id]
+      [product_id + ""]
     );
 
     return (productRows as Product[])[0];
@@ -951,23 +955,23 @@ export class ProductResolver {
       VALUES
         (?, ?, ?)    
     `,
-      [score, product_id, account_id]
+      [score + "", product_id + "", account_id + ""]
     );
 
     const [rateRows] = await pool.execute(
       `
         SELECT
-          COUNT(Rate.id) AS rating_times,
-          AVG(Rate.score) AS avg_rating
+          COUNT(r.id) AS rating_times,
+          AVG(r.score) AS avg_rating
         FROM
-          Product 
-          LEFT JOIN Rate ON Rate.product_id = Product.id
+          Product p
+          LEFT JOIN Rate r ON r.product_id = p.id
         WHERE 
-          Rate.product_id = ?  
+          r.product_id = ?  
         GROUP BY
-          Product.id
+          p.id
       `,
-      [product_id]
+      [product_id + ""]
     );
 
     return (rateRows as RateProduct[])[0];
