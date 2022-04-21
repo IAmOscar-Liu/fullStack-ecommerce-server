@@ -16,6 +16,7 @@ services:
     build: 
       context: .
       target: migration
+    image: karta0989006/ecommerce-migration  
     env_file: 
       - ./.env    
     command: ./wait-for-it/wait-for-it.sh mysqldb:$DATABASE_PORT --strict --timeout=300 -- node node_modules/db-migrate/bin/db-migrate up initialize
@@ -26,6 +27,7 @@ services:
 
   ecommerce-server:
     build: .
+    image: karta0989006/ecommerce-server
     env_file: ./.env
     links:
       - mysqldb  

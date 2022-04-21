@@ -5,7 +5,7 @@ services:
       context: .
       target: production
       args:
-        NODE_ENV: production
+        NODE_ENV: production   
     ports: # No need for port when we use nginx
       - $PORT:$PORT  
     environment:
