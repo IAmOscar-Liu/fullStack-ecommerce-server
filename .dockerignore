@@ -1,0 +1,8 @@
+node_modules
+dist
+wait-for-it
+Dockerfile
+.dockerignore
+.git
+.gitignore
+docker-compose*

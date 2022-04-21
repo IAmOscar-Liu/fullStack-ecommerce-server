@@ -1,0 +1,23 @@
+version: '3'
+services:
+  mysqldb:
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  ecommerce-server:
+    build: 
+      context: .
+      target: development
+      args:
+        NODE_ENV: development
+    ports: # No need for ports when we use nginx
+      - $PORT:$PORT
+    volumes: 
+      - ./:/app
+      - /app/node_modules  
+      - /app/dist
+      - /app/wait-for-it   
+    command: ./wait-for-it/wait-for-it.sh mysqldb:$DATABASE_PORT --strict --timeout=300 -- npm run docker-dev 
+ 
+volumes:
+  mysql_data:            

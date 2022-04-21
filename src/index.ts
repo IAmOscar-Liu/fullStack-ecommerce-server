@@ -36,7 +36,9 @@ const firebaseConfig: FirebaseOptions = {
   measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {apiVersion: '2020-08-27'});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2020-08-27",
+});
 
 const main = async () => {
   const pool = mysql.createPool({
@@ -110,6 +112,7 @@ const main = async () => {
   const app = express();
 
   app.use(cookieParser());
+  app.enable("trust proxy");
   app.use(
     cors({
       origin: process.env.CORS_ORIGIN,
@@ -122,12 +125,12 @@ const main = async () => {
   // app.use(passport.session());
 
   app.get(
-    "/auth/google/login",
+    "/api/auth/google/login",
     passport.authenticate("google", { scope: ["profile"] })
   );
 
   app.get(
-    "/auth/google/callback",
+    "/api/auth/google/callback",
     passport.authenticate("google", {
       failureRedirect: `${process.env.FRONT_END_REDIRECT}?failure=true`,
       session: false,
@@ -142,7 +145,7 @@ const main = async () => {
     }
   );
 
-  app.post("/refresh_token", async (req, res) => {
+  app.post("/api/refresh_token", async (req, res) => {
     // console.log("refresh_token get cookies");
     // console.log(req.cookies);
 
@@ -206,11 +209,11 @@ const main = async () => {
     return res.send({ ok: true, access_token: tokens.access_token });
   });
 
-  apolloServer.applyMiddleware({ app, cors: false });
+  apolloServer.applyMiddleware({ app, cors: false, path: "/api" });
 
   app.listen(process.env.PORT, () => {
     console.log(
-      `server started on http://localhost:${process.env.PORT}/graphql`
+      `This server started on http://localhost:${process.env.PORT}/graphql`
     );
   });
 };

@@ -1,0 +1,36 @@
+version: '3'
+services:
+  mysqldb:
+    image: mysql:8.0.28
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=$DATABASE_PASSWORD
+      - MYSQL_DATABASE=$DATABASE_NAME  
+    ports:
+      - 3336:$DATABASE_PORT
+    tty: true
+
+  migration:
+    build: 
+      context: .
+      target: migration
+    env_file: 
+      - ./.env    
+    command: ./wait-for-it/wait-for-it.sh mysqldb:$DATABASE_PORT --strict --timeout=300 -- node node_modules/db-migrate/bin/db-migrate up initialize
+    links:
+      - mysqldb
+    depends_on:
+      - mysqldb
+
+  ecommerce-server:
+    build: .
+    env_file: ./.env
+    links:
+      - mysqldb  
+    depends_on:
+      - mysqldb
+    
+
+

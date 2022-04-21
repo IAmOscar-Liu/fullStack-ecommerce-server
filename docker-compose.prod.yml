@@ -1,0 +1,15 @@
+version: '3'
+services:
+  ecommerce-server:
+    build: 
+      context: .
+      target: production
+      args:
+        NODE_ENV: production
+    ports: # No need for port when we use nginx
+      - $PORT:$PORT  
+    environment:
+      - NODE_ENV=production
+    command: ./wait-for-it/wait-for-it.sh mysqldb:$DATABASE_PORT --strict --timeout=300 -- node dist/index.js
+ 
+         

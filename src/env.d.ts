@@ -6,7 +6,7 @@ declare global {
       DATABASE_PASSWORD: string;
       DATABASE_NAME: string;
       DATABASE_PORT: string;
-      PORT: string;
+      DATABASE_PORT: string;
       CORS_ORIGIN: string;
       REFRESH_TOKEN_SECRET: string;
       ACCESS_TOKEN_SECRET: string;
