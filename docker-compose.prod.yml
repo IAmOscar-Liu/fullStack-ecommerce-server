@@ -10,12 +10,12 @@ services:
       - $PORT:$PORT  
     environment:
       - NODE_ENV=production
-      - CORS_ORIGIN=http://159.65.3.197:3000
+      - CORS_ORIGIN=http://gofasthorse.com:3000
       - GOOGLE_CLIENT_SECRET=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
-      - GOOGLE_CALLBACK_URL=http://159.65.3.197:3000/api/auth/google/callback
-      - FRONT_END_REDIRECT=http://159.65.3.197:3000/login
-      - FRONT_END_CART_URL=http://159.65.3.197:3000/main/personal/cart
-      - FRONT_END_CHECKOUT_SUCCESS_URL=http://159.65.3.197:3000/main/personal/success
+      - GOOGLE_CALLBACK_URL=http://gofasthorse.com:3000/api/auth/google/callback
+      - FRONT_END_REDIRECT=http://gofasthorse.com:3000/login
+      - FRONT_END_CART_URL=http://gofasthorse.com:3000/main/personal/cart
+      - FRONT_END_CHECKOUT_SUCCESS_URL=http://gofasthorse.com:3000/main/personal/success
     command: ./wait-for-it/wait-for-it.sh mysqldb:$DATABASE_PORT --strict --timeout=300 -- node dist/index.js
  
          
