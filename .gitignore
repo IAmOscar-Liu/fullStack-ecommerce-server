@@ -2,5 +2,6 @@ node_modules/
 dist/
 wait-for-it/
 .env
+.env.production
 
 

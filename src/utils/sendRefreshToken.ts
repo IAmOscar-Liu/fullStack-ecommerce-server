@@ -12,5 +12,6 @@ export const sendRefreshToken = (res: Response, refresh_token: string) => {
     httpOnly: true,
     path: "/",
     secure: process.env.NODE_ENV === "production",
+    domain: process.env.NODE_ENV === "production" ? ".gofasthorse.com" : undefined,
   });
 };

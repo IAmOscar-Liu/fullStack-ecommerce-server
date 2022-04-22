@@ -35,7 +35,7 @@ WORKDIR /app
 
 COPY package.json .
 COPY package-lock.json .
-COPY .env .
+COPY .env.production .env
 COPY .env.example .
 
 RUN npm ci --only=production
