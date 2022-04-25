@@ -22,6 +22,7 @@ COPY package-lock.json .
 RUN npm install
 
 COPY . ./
+COPY .env.production .env
 
 RUN npm run gen-env
 RUN npm run build
@@ -35,12 +36,14 @@ WORKDIR /app
 
 COPY package.json .
 COPY package-lock.json .
-COPY .env.production .env
-COPY .env.example .
+# COPY .env.production .env
+# COPY .env.example .
 
 RUN npm ci --only=production
 
 COPY --from=development /app/dist ./dist
 COPY --from=development /app/wait-for-it ./wait-for-it
+COPY --from=development /app/.env . 
+COPY --from=development /app/.env.example .
 
 CMD ["node", "dist/index.js"]
