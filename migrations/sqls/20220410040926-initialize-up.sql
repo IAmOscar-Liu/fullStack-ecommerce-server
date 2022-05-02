@@ -1727,7 +1727,7 @@ VALUES
     (
         "This is the sample blog 2.",
         1,
-        "/images/blog2.png"
+        "/images/blogs/blog_example.jpg"
     );
 
 INSERT INTO
@@ -1741,7 +1741,7 @@ VALUES
     (
         "This is the sample blog 4.",
         2,
-        "/images/blog4.png"
+        "/images/blogs/blog_example.jpg"
     );  
 
 INSERT INTO
