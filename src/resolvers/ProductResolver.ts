@@ -671,7 +671,7 @@ export class ProductResolver {
   @Mutation(() => Product, { nullable: true })
   @UseMiddleware(isAuth)
   async createProduct(
-    @Ctx() { pool, payload }: MyContext,
+    @Ctx() { pool, req }: MyContext,
     @Arg("productInput")
     {
       title,
@@ -687,8 +687,7 @@ export class ProductResolver {
     @Arg("file_4", () => GraphQLUpload, { nullable: true }) file_4: FileUpload,
     @Arg("file_5", () => GraphQLUpload, { nullable: true }) file_5: FileUpload
   ): Promise<Product | null> {
-    if (createdBy + "" !== payload?.account_id + "")
-      throw new UnauthorizedError();
+    if (createdBy + "" !== req.account_id + "") throw new UnauthorizedError();
 
     if (categories.length === 0)
       throw new Error("You should select at least one category.");
@@ -787,7 +786,7 @@ export class ProductResolver {
   @Mutation(() => Product, { nullable: true })
   @UseMiddleware(isAuth)
   async updateProduct(
-    @Ctx() { pool, payload }: MyContext,
+    @Ctx() { pool, req }: MyContext,
     @Arg("account_id", () => ID) account_id: number,
     @Arg("product_id", () => ID) product_id: number,
     @Arg("productUpdateInput")
@@ -798,8 +797,7 @@ export class ProductResolver {
     @Arg("file_4", () => GraphQLUpload, { nullable: true }) file_4: FileUpload,
     @Arg("file_5", () => GraphQLUpload, { nullable: true }) file_5: FileUpload
   ): Promise<Product | null> {
-    if (account_id + "" !== payload?.account_id + "")
-      throw new UnauthorizedError();
+    if (account_id + "" !== req.account_id + "") throw new UnauthorizedError();
 
     const [productCreatedByRows] = await pool.execute(
       `SELECT createdBy FROM Product WHERE id = ?`,
@@ -904,13 +902,12 @@ export class ProductResolver {
   @Mutation(() => Product, { nullable: true })
   @UseMiddleware(isAuth)
   async freezeOrUnFreezeProduct(
-    @Ctx() { pool, payload }: MyContext,
+    @Ctx() { pool, req }: MyContext,
     @Arg("account_id", () => ID) account_id: number,
     @Arg("product_id", () => ID) product_id: number,
     @Arg("isAvailable") isAvailable: boolean
   ): Promise<Product | null> {
-    if (account_id + "" !== payload?.account_id + "")
-      throw new UnauthorizedError();
+    if (account_id + "" !== req.account_id + "") throw new UnauthorizedError();
 
     const [productCreatedByRows] = await pool.execute(
       `SELECT createdBy FROM Product WHERE id = ?`,
@@ -942,11 +939,10 @@ export class ProductResolver {
   @Mutation(() => RateProduct)
   @UseMiddleware(isAuth)
   async rateProduct(
-    @Ctx() { pool, payload }: MyContext,
+    @Ctx() { pool, req }: MyContext,
     @Arg("rateInput") { score, account_id, product_id }: RateInput
   ): Promise<RateProduct> {
-    if (account_id + "" !== payload?.account_id + "")
-      throw new UnauthorizedError();
+    if (account_id + "" !== req.account_id + "") throw new UnauthorizedError();
 
     await pool.execute(
       `

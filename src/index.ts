@@ -112,7 +112,6 @@ const main = async () => {
   const app = express();
 
   app.use(cookieParser());
-  app.enable("trust proxy");
   app.use(
     cors({
       origin:
@@ -129,6 +128,10 @@ const main = async () => {
   app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
   app.use(passport.initialize());
   // app.use(passport.session());
+
+  app.get("/api/hello", (_, res) => {
+    res.send("<h1>Hello world</h1>");
+  });
 
   app.get(
     "/api/auth/google/login",
@@ -219,7 +222,7 @@ const main = async () => {
 
   app.listen(process.env.PORT, () => {
     console.log(
-      `This server started on http://localhost:${process.env.PORT}/graphql`
+      `server started on http://localhost:${process.env.PORT}/graphql`
     );
   });
 };

@@ -278,12 +278,11 @@ export class BlogResolver {
   @Mutation(() => NewBlogData, { nullable: true })
   @UseMiddleware(isAuth)
   async createBlog(
-    @Ctx() { pool, payload }: MyContext,
+    @Ctx() { pool, req }: MyContext,
     @Arg("blogInput") { content, account_id }: BlogInput,
     @Arg("user_img", () => GraphQLUpload, { nullable: true }) file: FileUpload
   ): Promise<NewBlogData> {
-    if (account_id + "" !== payload?.account_id + "")
-      throw new UnauthorizedError();
+    if (account_id + "" !== req.account_id + "") throw new UnauthorizedError();
 
     const poolTransaction = await pool.getConnection();
     await poolTransaction.beginTransaction();
@@ -359,11 +358,10 @@ export class BlogResolver {
   @Mutation(() => NewBlogCommentData)
   @UseMiddleware(isAuth)
   async createBlogComment(
-    @Ctx() { pool, payload }: MyContext,
+    @Ctx() { pool, req }: MyContext,
     @Arg("blogCommentInput") { content, account_id, blog_id }: BlogCommentInput
   ): Promise<NewBlogCommentData> {
-    if (account_id + "" !== payload?.account_id + "")
-      throw new UnauthorizedError();
+    if (account_id + "" !== req.account_id + "") throw new UnauthorizedError();
 
     const [rows] = await pool.execute(
       `
@@ -402,11 +400,10 @@ export class BlogResolver {
   @Mutation(() => NewBlogLikeData)
   @UseMiddleware(isAuth)
   async createBlogLike(
-    @Ctx() { pool, payload }: MyContext,
+    @Ctx() { pool, req }: MyContext,
     @Arg("blogLikeInput") { blog_id, account_id }: BlogLikeInput
   ): Promise<NewBlogLikeData> {
-    if (account_id + "" !== payload?.account_id + "")
-      throw new UnauthorizedError();
+    if (account_id + "" !== req.account_id + "") throw new UnauthorizedError();
 
     await pool.execute(
       `
@@ -433,12 +430,11 @@ export class BlogResolver {
   @Mutation(() => NewBlogCommentLikeData)
   @UseMiddleware(isAuth)
   async createBlogCommentLike(
-    @Ctx() { pool, payload }: MyContext,
+    @Ctx() { pool, req }: MyContext,
     @Arg("blogCommentLikeInput")
     { blog_comment_id, account_id }: BlogCommentLikeInput
   ): Promise<NewBlogCommentLikeData> {
-    if (account_id + "" !== payload?.account_id + "")
-      throw new UnauthorizedError();
+    if (account_id + "" !== req.account_id + "") throw new UnauthorizedError();
 
     await pool.execute(
       `

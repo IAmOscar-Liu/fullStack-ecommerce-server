@@ -289,11 +289,10 @@ export class PostResolver {
   @Mutation(() => NewPostData)
   @UseMiddleware(isAuth)
   async createPost(
-    @Ctx() { pool, payload }: MyContext,
+    @Ctx() { pool, req }: MyContext,
     @Arg("postInput") { content, account_id, product_id }: PostInput
   ): Promise<NewPostData> {
-    if (account_id + "" !== payload?.account_id + "")
-      throw new UnauthorizedError();
+    if (account_id + "" !== req.account_id + "") throw new UnauthorizedError();
 
     const [rows] = await pool.execute(
       `
@@ -334,11 +333,10 @@ export class PostResolver {
   @Mutation(() => NewCommentData)
   @UseMiddleware(isAuth)
   async createComment(
-    @Ctx() { pool, payload }: MyContext,
+    @Ctx() { pool, req }: MyContext,
     @Arg("commentInput") { content, account_id, post_id }: CommentInput
   ): Promise<NewCommentData> {
-    if (account_id + "" !== payload?.account_id + "")
-      throw new UnauthorizedError();
+    if (account_id + "" !== req.account_id + "") throw new UnauthorizedError();
 
     const [rows] = await pool.execute(
       `
@@ -377,11 +375,10 @@ export class PostResolver {
   @Mutation(() => NewPostLikeData)
   @UseMiddleware(isAuth)
   async createPostLike(
-    @Ctx() { pool, payload }: MyContext,
+    @Ctx() { pool, req }: MyContext,
     @Arg("postLikeInput") { post_id, account_id }: PostLikeInput
   ): Promise<NewPostLikeData> {
-    if (account_id + "" !== payload?.account_id + "")
-      throw new UnauthorizedError();
+    if (account_id + "" !== req.account_id + "") throw new UnauthorizedError();
 
     await pool.execute(
       `
@@ -408,11 +405,10 @@ export class PostResolver {
   @Mutation(() => NewCommentLikeData)
   @UseMiddleware(isAuth)
   async createCommentLike(
-    @Ctx() { pool, payload }: MyContext,
+    @Ctx() { pool, req }: MyContext,
     @Arg("commentLikeInput") { comment_id, account_id }: CommentLikeInput
   ): Promise<NewCommentLikeData> {
-    if (account_id + "" !== payload?.account_id + "")
-      throw new UnauthorizedError();
+    if (account_id + "" !== req.account_id + "") throw new UnauthorizedError();
 
     await pool.execute(
       `

@@ -29,6 +29,7 @@ CREATE TABLE Account (
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updateAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     provider CHAR(30) DEFAULT 'local',
+    provider_id CHAR(200),
     CONSTRAINT unique_name UNIQUE (name, provider)
 );
 

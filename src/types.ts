@@ -6,7 +6,7 @@ import { createCommentLoader } from "./utils/createCommentLoader";
 import { createOrderProductLoader } from "./utils/createOrderProductLoader";
 
 export type MyContext = {
-  req: Request;
+  req: Request & { account_id?: string };
   res: Response;
   pool: mysql.Pool;
   payload?: { account_id: string };
@@ -15,5 +15,3 @@ export type MyContext = {
   orderProductLoader: ReturnType<typeof createOrderProductLoader>;
   stripe: Stripe;
 };
-
-

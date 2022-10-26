@@ -317,13 +317,12 @@ export class AccountResolver {
   @Mutation(() => AccountDetail)
   @UseMiddleware(isAuth)
   async updateUser(
-    @Ctx() { pool, payload }: MyContext,
+    @Ctx() { pool, req }: MyContext,
     @Arg("account_id", () => ID) account_id: number,
     @Arg("userUpdateData") userUpdateData: UserUpdateData,
     @Arg("user_img", () => GraphQLUpload, { nullable: true }) file: FileUpload
   ): Promise<AccountDetail> {
-    if (account_id + "" !== payload?.account_id + "")
-      throw new UnauthorizedError();
+    if (account_id + "" !== req.account_id + "") throw new UnauthorizedError();
 
     const poolTransaction = await pool.getConnection();
     await poolTransaction.beginTransaction();

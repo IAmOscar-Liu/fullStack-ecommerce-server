@@ -118,12 +118,11 @@ export class FavoriteResolver {
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async createFavoriteProduct(
-    @Ctx() { pool, payload }: MyContext,
+    @Ctx() { pool, req }: MyContext,
     @Arg("product_id") product_id: number,
     @Arg("account_id") account_id: number
   ): Promise<boolean> {
-    if (account_id + "" !== payload?.account_id + "")
-      throw new UnauthorizedError();
+    if (account_id + "" !== req.account_id + "") throw new UnauthorizedError();
 
     try {
       await pool.execute(
@@ -145,12 +144,11 @@ export class FavoriteResolver {
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async deleteFavoriteProduct(
-    @Ctx() { pool, payload }: MyContext,
+    @Ctx() { pool, req }: MyContext,
     @Arg("product_id") product_id: number,
     @Arg("account_id") account_id: number
   ): Promise<boolean> {
-    if (account_id + "" !== payload?.account_id + "")
-      throw new UnauthorizedError();
+    if (account_id + "" !== req.account_id + "") throw new UnauthorizedError();
 
     try {
       const [rows] = await pool.execute(

@@ -217,11 +217,10 @@ export class OrderResolver {
   @Mutation(() => OrderResult, { nullable: true })
   @UseMiddleware(isAuth)
   async createOrder(
-    @Ctx() { pool, stripe, payload }: MyContext,
+    @Ctx() { pool, stripe, req }: MyContext,
     @Arg("orderInput") { account_id, products }: OrderInput
   ): Promise<OrderResult | null> {
-    if (account_id + "" !== payload?.account_id + "")
-      throw new UnauthorizedError();
+    if (account_id + "" !== req.account_id + "") throw new UnauthorizedError();
 
     if (products.length === 0)
       throw new UserInputError("Products are not provided.");
@@ -326,12 +325,11 @@ export class OrderResolver {
   @Mutation(() => OrderResult, { nullable: true })
   @UseMiddleware(isAuth)
   async confirmOrder(
-    @Ctx() { pool, stripe, payload }: MyContext,
+    @Ctx() { pool, stripe, req }: MyContext,
     @Arg("account_id", () => ID) account_id: number,
     @Arg("session_id") session_id: string
   ): Promise<OrderResult | null> {
-    if (account_id + "" !== payload?.account_id + "")
-      throw new UnauthorizedError();
+    if (account_id + "" !== req.account_id + "") throw new UnauthorizedError();
 
     const [orderRows] = await pool.execute(
       `SELECT * FROM MyOrder WHERE session_id = ?`,
@@ -367,13 +365,12 @@ export class OrderResolver {
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async cancelOrder(
-    @Ctx() { pool, payload }: MyContext,
+    @Ctx() { pool, req }: MyContext,
     @Arg("account_id", () => ID) account_id: number,
     @Arg("session_id") session_id: string,
     @Arg("payment", { defaultValue: "Incomplete" }) payment: string
   ): Promise<boolean> {
-    if (account_id + "" !== payload?.account_id + "")
-      throw new UnauthorizedError();
+    if (account_id + "" !== req.account_id + "") throw new UnauthorizedError();
 
     if (payment !== "Incomplete" && payment !== "Failed")
       throw new UserInputError(
